@@ -6,6 +6,7 @@ export default function Home() {
       <Head>
         <title>Online Class Room</title>
       </Head>
+      <h1>Tomorrow We will start</h1>
     </div>
   );
 }
