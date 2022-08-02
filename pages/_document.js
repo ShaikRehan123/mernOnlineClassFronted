@@ -1,4 +1,6 @@
+import { ColorModeScript } from "@chakra-ui/react";
 import { Html, Head, Main, NextScript } from "next/document";
+import theme from "../lib/theme";
 
 export default function Document() {
   return (
@@ -22,9 +24,11 @@ export default function Document() {
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="manifest" href="/manifest.json" />
       </Head>
       <body>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+
         <Main />
         <NextScript />
       </body>
