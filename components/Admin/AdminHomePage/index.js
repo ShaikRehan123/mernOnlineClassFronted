@@ -13,12 +13,14 @@ import {
   useDisclosure,
   useColorMode,
 } from "@chakra-ui/react";
-import { AiOutlineDashboard } from "react-icons/ai";
+import { AiOutlineDashboard, AiOutlineLogout } from "react-icons/ai";
+import { MdOutlineCreate } from "react-icons/md";
 import { FiMenu } from "react-icons/fi";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { deleteCookie } from "cookies-next";
 
-export default function AdminNavbar({ children }) {
+export default function AdminHomePage({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -56,10 +58,31 @@ const SidebarContent = ({ onClose, ...rest }) => {
       name: "Dashboard",
       icon: AiOutlineDashboard,
       onClick: () => {
-        alert(router.pathname);
-        // if (router.pathname !== "/admin/dashboard") {
-        // router.push("/admin/dashboard");
-        // }
+        if (router.pathname !== "/") {
+          router.push("/");
+        }
+      },
+    },
+    {
+      // create a new course
+      name: "Create Course",
+      icon: MdOutlineCreate,
+      onClick: () => {
+        if (router.pathname !== "/create-course") {
+          router.push("/create-course");
+        }
+      },
+    },
+    {
+      name: "Logout",
+      icon: AiOutlineLogout,
+      onClick: () => {
+        deleteCookie("token");
+        deleteCookie("role_id");
+        deleteCookie("name");
+        deleteCookie("email");
+        deleteCookie("id");
+        router.push("/login");
       },
     },
     // { name: "Trending", icon: FiTrendingUp },

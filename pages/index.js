@@ -1,15 +1,29 @@
 import Head from "next/head";
 import { getCookie } from "cookies-next";
+import AdminHomePage from "../components/Admin/AdminHomePage";
 
-export default function Home() {
-  return (
-    <div>
-      <Head>
-        <title>Online Class Room</title>
-      </Head>
-      <h1>User Page</h1>
-    </div>
-  );
+export default function Home({ role_id }) {
+  if (role_id == "1") {
+    return (
+      <>
+        <Head>
+          <title>Admin</title>
+        </Head>
+        <AdminHomePage>
+          <h1>Admin Home Page</h1>
+        </AdminHomePage>
+      </>
+    );
+  } else {
+    return (
+      <div>
+        <Head>
+          <title>Online Class Room</title>
+        </Head>
+        <h1>User Page</h1>
+      </div>
+    );
+  }
 }
 
 export const getServerSideProps = ({ req, res }) => {
@@ -23,14 +37,8 @@ export const getServerSideProps = ({ req, res }) => {
   });
   if (cookie != undefined) {
     return {
-      props: {},
-    };
-  }
-  if (role_id == "1") {
-    return {
-      redirect: {
-        destination: "/admin/dashboard",
-        permanent: false,
+      props: {
+        role_id,
       },
     };
   }

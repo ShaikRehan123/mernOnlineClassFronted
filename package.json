@@ -17,10 +17,10 @@
     "cookies-next": "^2.1.1",
     "framer-motion": "^6",
     "next": "12.2.3",
-    "next-pwa": "^5.5.5",
     "nextjs-progressbar": "^0.0.14",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.2",
     "react-hot-toast": "^2.3.0",
     "react-icons": "^4.4.0"
   },

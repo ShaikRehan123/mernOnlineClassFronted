@@ -36,7 +36,7 @@ export default function Login() {
       const role_id = data.data.role_id;
       const name = data.data.name;
       const sEmail = data.data.email;
-      const id = data.data.id;
+      const id = data.data._id;
 
       if (remember) {
         setCookie("token", jwt, { maxAge: 60 * 60 * 24 * 7 });
