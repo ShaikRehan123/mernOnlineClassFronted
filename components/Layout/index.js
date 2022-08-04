@@ -6,11 +6,8 @@ import { useRouter } from "next/router";
 const Navbar = dynamic(() => {
   return import("../Navbar");
 });
-const AdminNavbar = dynamic(() => {
-  return import("../AdminNavbar");
-});
 const AdminToggleTheme = dynamic(() => {
-  return import("../AdminToggleTheme");
+  return import("../Admin/AdminToggleTheme");
 });
 export default function Layout({ children }) {
   const token = getCookie("token");
@@ -23,7 +20,6 @@ export default function Layout({ children }) {
         <NextNProgress />
         {token != undefined && role_id == "1" ? (
           <>
-            <AdminNavbar />
             <AdminToggleTheme />
           </>
         ) : null}
