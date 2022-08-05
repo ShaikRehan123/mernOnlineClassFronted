@@ -74,12 +74,13 @@ function Rating({ rating, numReviews }) {
 function CourseCard({
   name,
   category_name,
-  created_at,
+  // created_at,
   image,
   //   is_active,
   is_featured,
   is_trending,
-  author_name,
+  // author_name,
+  colorMode,
   price,
   isAdmin,
 }) {
@@ -150,7 +151,7 @@ function CourseCard({
                     h={7}
                     w={7}
                     alignSelf={"center"}
-                    color={useColorModeValue("gray.900", "white")}
+                    color={colorMode === "light" ? "gray.800" : "white"}
                   />
                 </chakra.a>
               </Tooltip>
@@ -182,7 +183,7 @@ function CourseCard({
             {price !== 0 ? (
               <Box
                 fontSize="2xl"
-                color={useColorModeValue("gray.800", "white")}
+                color={colorMode === "light" ? "gray.800" : "white"}
               >
                 <Box as="span" color={"gray.600"} fontSize="lg">
                   ₹
@@ -192,7 +193,7 @@ function CourseCard({
             ) : (
               <Box
                 fontSize="2xl"
-                color={useColorModeValue("gray.800", "white")}
+                color={colorMode === "light" ? "gray.800" : "white"}
               >
                 Free
               </Box>
