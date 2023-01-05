@@ -7,10 +7,10 @@ export default function Home({ role_id }) {
     return (
       <>
         <Head>
-          <title>Admin</title>
+          <title>Teacher</title>
         </Head>
         <AdminHomePage>
-          <h1>Admin Home Page</h1>
+          <h1>Teacher Home Page</h1>
         </AdminHomePage>
       </>
     );

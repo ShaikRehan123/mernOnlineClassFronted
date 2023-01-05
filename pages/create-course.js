@@ -25,7 +25,7 @@ export default function Home({ categories, courses }) {
   const { colorMode } = useColorMode();
   const imageRef = useRef();
   const router = useRouter();
-  console.log(courses);
+  // console.log(courses);
   return (
     <>
       <Head>
@@ -318,7 +318,7 @@ export default function Home({ categories, courses }) {
                     textAlign="center"
                     color="gray.500"
                   >
-                    Upload Image
+                    Thumbnail Image
                   </Heading>
                   <Icon as={AiOutlineUpload} color="gray.500" marginLeft="1" />
                 </Flex>
@@ -369,9 +369,11 @@ export default function Home({ categories, courses }) {
               {courses.map((course) => (
                 <CourseCard
                   key={course._id}
+                  course_id={course._id}
                   {...course}
                   colorMode={colorMode}
                   isAdmin={true}
+                  showAddLessonButton={true}
                 />
               ))}
             </SimpleGrid>
@@ -391,14 +393,27 @@ export const getServerSideProps = async ({ req, res }) => {
     req,
     res,
   });
+  const user_id = getCookie("user_id", {
+    req,
+    res,
+  });
   if (cookie != undefined && role_id == 1) {
     // get categories
     try {
       const categories = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/category/get_all_categories`
       );
-      const courses = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/get_all_courses`
+      const courses = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/admin/get_teacher_courses`,
+        {
+          teacher_id: user_id,
+          token: cookie,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
       );
       return {
         props: {

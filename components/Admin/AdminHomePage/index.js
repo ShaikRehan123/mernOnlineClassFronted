@@ -14,7 +14,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { AiOutlineDashboard, AiOutlineLogout } from "react-icons/ai";
-import { MdOutlineCreate } from "react-icons/md";
+import { MdCategory, MdOutlineCreate } from "react-icons/md";
 import { FiMenu } from "react-icons/fi";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -60,6 +60,15 @@ const SidebarContent = ({ onClose, ...rest }) => {
       onClick: () => {
         if (router.pathname !== "/") {
           router.push("/");
+        }
+      },
+    },
+    {
+      name: "Create Category",
+      icon: MdCategory,
+      onClick: () => {
+        if (router.pathname !== "/create-category") {
+          router.push("/create-category");
         }
       },
     },

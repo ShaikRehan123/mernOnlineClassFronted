@@ -18,7 +18,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import axios from "axios";
-export default function Login() {
+export default function TeacherLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -70,7 +70,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Login Now and be the best 🤙</title>
+        <title>Login Now and change life of students 🤙</title>
       </Head>
 
       <Flex
@@ -81,10 +81,12 @@ export default function Login() {
       >
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>
-            <Heading fontSize={"4xl"}>Sign in to your account</Heading>
+            <Heading fontSize={"4xl"} textAlign="center">
+              Sign in to your Teacher <br />
+              Dashboard
+            </Heading>
             <Text fontSize={"lg"} color={"gray.600"}>
-              to enjoy all of our life changing{" "}
-              <Link color={"blue.400"}>courses</Link> 👍
+              and start creating <Link color={"blue.400"}>courses</Link> 👍
             </Text>
           </Stack>
           <Box
@@ -141,7 +143,7 @@ export default function Login() {
                   <Link
                     color={"blue.400"}
                     onClick={() => {
-                      router.push("/signup");
+                      router.push("/teacher-signup");
                     }}
                   >
                     Signup
@@ -153,10 +155,10 @@ export default function Login() {
                   <Link
                     color={"blue.400"}
                     onClick={() => {
-                      router.push("/teacher-login");
+                      router.push("/login");
                     }}
                   >
-                    Login as a teacher
+                    Login as Student
                   </Link>
                 </Text>
               </Stack>
@@ -173,7 +175,7 @@ export async function getServerSideProps({ req, res }) {
     req,
     res,
   });
-  // console.log(cookie);
+  //   console.log(cookie);
   if (cookie == undefined) {
     return {
       props: {},
