@@ -94,10 +94,6 @@ const SidebarContent = ({ onClose, ...rest }) => {
         router.push("/login");
       },
     },
-    // { name: "Trending", icon: FiTrendingUp },
-    // { name: "Explore", icon: FiCompass },
-    // { name: "Favourites", icon: FiStar },
-    // { name: "Settings", icon: FiSettings },
   ];
 
   return (

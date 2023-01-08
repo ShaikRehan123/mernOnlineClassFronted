@@ -85,9 +85,9 @@ export default function Home({ categories, courses }) {
                 ) {
                   toast.error("Price should be between 0 and 10000");
                 }
-                // image validation
+                // image validation max size 5mb
                 else if (imageRef.current.files[0].size > 5000000) {
-                  toast.error("Image size should be less than 5MB");
+                  toast.error("Image size should be less than 5mb");
                 }
                 // description must be less than 1000 characters
                 else if (e.target.course_description.value.length > 1000) {
@@ -374,6 +374,7 @@ export default function Home({ categories, courses }) {
                   colorMode={colorMode}
                   isAdmin={true}
                   showAddLessonButton={true}
+                  showDeleteButton={true}
                 />
               ))}
             </SimpleGrid>

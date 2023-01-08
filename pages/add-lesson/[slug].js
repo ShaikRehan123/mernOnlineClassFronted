@@ -19,15 +19,16 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { AiOutlineUpload } from "react-icons/ai";
+import LessonCard from "../../components/Common/LessonCard";
 export default function Home({ lessons, course_id }) {
   const { colorMode } = useColorMode();
   const router = useRouter();
-  console.log(lessons);
   const videoRef = useRef(null);
   const [video, setVideo] = useState({
     url: "",
     file: "",
   });
+  console.log(lessons);
   return (
     <>
       <Head>
@@ -69,21 +70,12 @@ export default function Home({ lessons, course_id }) {
                   toast.error("Please fill all the fields");
                 } else if (video.file === "") {
                   toast.error("Please select a video");
-                } else if (video.file.size > 100000000) {
-                  toast.error("Video size should be less than 100MB");
+                } else if (video.file.size > 200000000) {
+                  toast.error("Video size should be less than 200MB");
                 } else {
-                  console.log(video.file.size / 1000000 + "MB");
-                  // print binar
-                  const reader = new FileReader();
-                  reader.readAsBinaryString(video.file);
-                  reader.onload = function () {
-                    console.log(reader.result);
-                  };
-                  reader.onerror = function () {
-                    console.log(reader.error);
-                  };
+                  // console.log(video.file.size / 1000000 + "MB");
 
-                  return;
+                  // return;
                   try {
                     const res = await axios.post(
                       `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/admin/upload_lesson`,
@@ -98,9 +90,8 @@ export default function Home({ lessons, course_id }) {
                     toast.success("Lesson created successfully");
                     router.reload();
                   } catch (err) {
-                    toast.error(
-                      err.response.data.message || "Something went wrong"
-                    );
+                    console.log(err);
+                    toast.error("Something went wrong, please try again later");
                   }
                 }
               }}
@@ -264,6 +255,22 @@ export default function Home({ lessons, course_id }) {
                 You have not created any lessons yet
               </Text>
             )}
+            <Container
+              maxW="container.xl"
+              marginTop={4}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+                gridGap: "20px",
+              }}
+            >
+              {
+                // map through all courses
+                lessons.map((lesson) => {
+                  return <LessonCard key={lesson._id} lesson={lesson} />;
+                })
+              }
+            </Container>
           </Container>
         </Container>
       </AdminHomePage>
@@ -280,10 +287,6 @@ export const getServerSideProps = async ({ req, res, params }) => {
     req,
     res,
   });
-  const user_id = getCookie("user_id", {
-    req,
-    res,
-  });
 
   //    get course_id from url
 
@@ -296,14 +299,28 @@ export const getServerSideProps = async ({ req, res, params }) => {
         `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/lessons/get-lessons`,
         {
           course_id: course_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
         }
       );
-      return {
-        props: {
-          lessons: previousLessons.data,
-          course_id: course_id,
-        },
-      };
+      if (previousLessons.data.status == "success") {
+        return {
+          props: {
+            lessons: previousLessons.data.data,
+            course_id: course_id,
+          },
+        };
+      } else {
+        return {
+          props: {
+            lessons: [],
+            course_id: course_id,
+          },
+        };
+      }
     } catch {
       return {
         props: {

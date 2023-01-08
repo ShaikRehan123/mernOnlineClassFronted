@@ -24,6 +24,10 @@ export default function Login() {
   const [remember, setRemember] = useState(false);
   const handleClick = async (e) => {
     e.preventDefault();
+    if (email.trim() === "" || password.trim() === "") {
+      toast.error("Please fill all the fields");
+      return;
+    }
     try {
       const data = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/users/login`,
@@ -78,6 +82,11 @@ export default function Login() {
         align={"center"}
         justify={"center"}
         bg={useColorModeValue("gray.50", "gray.800")}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            handleClick(e);
+          }
+        }}
       >
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>

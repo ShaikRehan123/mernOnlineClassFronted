@@ -1,8 +1,10 @@
 import Head from "next/head";
 import { getCookie } from "cookies-next";
 import AdminHomePage from "../components/Admin/AdminHomePage";
+import axios from "axios";
+import CourseCard from "../components/Common/CourseCard/index";
 
-export default function Home({ role_id }) {
+export default function Home({ role_id, toptenCourses = [] }) {
   if (role_id == "1") {
     return (
       <>
@@ -15,6 +17,7 @@ export default function Home({ role_id }) {
       </>
     );
   } else {
+    console.log(toptenCourses);
     return (
       <div>
         <Head>
@@ -26,7 +29,7 @@ export default function Home({ role_id }) {
   }
 }
 
-export const getServerSideProps = ({ req, res }) => {
+export const getServerSideProps = async ({ req, res }) => {
   const cookie = getCookie("token", {
     req,
     res,
@@ -35,12 +38,32 @@ export const getServerSideProps = ({ req, res }) => {
     req,
     res,
   });
-  if (cookie != undefined) {
+  if (cookie != undefined && role_id == "1") {
     return {
       props: {
         role_id,
       },
     };
+  }
+  if (cookie != undefined && role_id == "2") {
+    try {
+      const toptenCourses = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/top-ten-courses`
+      );
+      return {
+        props: {
+          role_id,
+          toptenCourses: toptenCourses.data,
+        },
+      };
+    } catch (err) {
+      return {
+        props: {
+          role_id,
+          toptenCourses: [],
+        },
+      };
+    }
   }
 
   return {

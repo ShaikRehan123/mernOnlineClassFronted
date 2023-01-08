@@ -24,45 +24,50 @@ export default function TeacherLogin() {
   const [remember, setRemember] = useState(false);
   const handleClick = async (e) => {
     e.preventDefault();
-    try {
-      const data = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/users/login`,
-        {
-          email: email,
-          password: password,
+    if (email.trim() === "" || password.trim() === "") {
+      toast.error("Please fill all the fields");
+      return;
+    } else {
+      try {
+        const data = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/users/login`,
+          {
+            email: email,
+            password: password,
+          }
+        );
+        const jwt = data.data.token;
+        const role_id = data.data.role_id;
+        const name = data.data.name;
+        const sEmail = data.data.email;
+        const id = data.data._id;
+
+        if (remember) {
+          setCookie("token", jwt, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("role_id", role_id, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("name", name, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("email", sEmail, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("id", id, { maxAge: 60 * 60 * 24 * 7 });
+        } else {
+          setCookie("token", jwt);
+          setCookie("role_id", role_id);
+          setCookie("name", name);
+          setCookie("email", sEmail);
+          setCookie("id", id);
         }
-      );
-      const jwt = data.data.token;
-      const role_id = data.data.role_id;
-      const name = data.data.name;
-      const sEmail = data.data.email;
-      const id = data.data._id;
 
-      if (remember) {
-        setCookie("token", jwt, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("role_id", role_id, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("name", name, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("email", sEmail, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("id", id, { maxAge: 60 * 60 * 24 * 7 });
-      } else {
-        setCookie("token", jwt);
-        setCookie("role_id", role_id);
-        setCookie("name", name);
-        setCookie("email", sEmail);
-        setCookie("id", id);
-      }
+        toast.success("Login Successful");
 
-      toast.success("Login Successful");
-
-      router.push("/");
-    } catch (err) {
-      if (
-        err.response.status === 400 &&
-        err.response.data.message == "Invalid email or password"
-      ) {
-        toast.error("Invalid email or password");
-      } else {
-        toast.error("Something went wrong");
+        router.push("/");
+      } catch (err) {
+        if (
+          err.response.status === 400 &&
+          err.response.data.message == "Invalid email or password"
+        ) {
+          toast.error("Invalid email or password");
+        } else {
+          toast.error("Something went wrong");
+        }
       }
     }
   };
@@ -78,6 +83,11 @@ export default function TeacherLogin() {
         align={"center"}
         justify={"center"}
         bg={useColorModeValue("gray.50", "gray.800")}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            handleClick(e);
+          }
+        }}
       >
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>

@@ -1,6 +1,5 @@
 import {
   Flex,
-  Circle,
   Box,
   Image,
   Badge,
@@ -11,7 +10,9 @@ import {
   HStack,
   Button,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
 import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 import { FiShoppingCart } from "react-icons/fi";
 
@@ -87,8 +88,29 @@ function CourseCard({
   isAdmin,
   showAddLessonButton,
   course_id,
+  showDeleteButton,
 }) {
   const router = useRouter();
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
+  const deleteCourse = async () => {
+    try {
+      const res = await axios.delete(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/delete/${course_id}`
+      );
+      if (res.data.status == "success") {
+        toast.success(res.data.message || "Course deleted successfully");
+        refreshData();
+      } else {
+        toast.error(res.data.message || "Something went wrong");
+      }
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    }
+  };
 
   return (
     <Flex p={50} w="full" alignItems="center" justifyContent="center">
@@ -111,7 +133,7 @@ function CourseCard({
         )} */}
 
         <Image
-          src={`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/upload/course_images/${image}`}
+          src={`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/assets/upload/course_images/${image}`}
           alt={`Picture of ${name}`}
           roundedTop="lg"
         />
@@ -212,7 +234,6 @@ function CourseCard({
               fontWeight="semibold"
               as="h4"
               lineHeight="tight"
-              // eslint-disable-next-line react-hooks/rules-of-hooks
               color={colorMode === "light" ? "gray.800" : "white"}
               onClick={() => {
                 router.push("/add-lesson/" + course_id);
@@ -225,6 +246,28 @@ function CourseCard({
                 // onClick={onOpen}
               >
                 Add Lesson
+              </Button>
+            </Box>
+          )}
+
+          {showDeleteButton && (
+            <Box
+              mt="1"
+              fontWeight="semibold"
+              as="h4"
+              lineHeight="tight"
+              color={colorMode === "light" ? "gray.800" : "white"}
+              onClick={() => {
+                const isConfirmed = confirm(
+                  "Are you sure you want to delete this course?"
+                );
+                if (isConfirmed) {
+                  deleteCourse();
+                }
+              }}
+            >
+              <Button colorScheme="red" variant="outline" size="sm">
+                Delete Course
               </Button>
             </Box>
           )}
