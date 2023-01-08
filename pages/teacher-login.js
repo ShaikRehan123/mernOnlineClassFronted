@@ -18,7 +18,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import axios from "axios";
-export default function Login() {
+export default function TeacherLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -27,46 +27,47 @@ export default function Login() {
     if (email.trim() === "" || password.trim() === "") {
       toast.error("Please fill all the fields");
       return;
-    }
-    try {
-      const data = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/users/login`,
-        {
-          email: email,
-          password: password,
+    } else {
+      try {
+        const data = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/users/login`,
+          {
+            email: email,
+            password: password,
+          }
+        );
+        const jwt = data.data.token;
+        const role_id = data.data.role_id;
+        const name = data.data.name;
+        const sEmail = data.data.email;
+        const id = data.data._id;
+
+        if (remember) {
+          setCookie("token", jwt, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("role_id", role_id, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("name", name, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("email", sEmail, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("id", id, { maxAge: 60 * 60 * 24 * 7 });
+        } else {
+          setCookie("token", jwt);
+          setCookie("role_id", role_id);
+          setCookie("name", name);
+          setCookie("email", sEmail);
+          setCookie("id", id);
         }
-      );
-      const jwt = data.data.token;
-      const role_id = data.data.role_id;
-      const name = data.data.name;
-      const sEmail = data.data.email;
-      const id = data.data._id;
 
-      if (remember) {
-        setCookie("token", jwt, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("role_id", role_id, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("name", name, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("email", sEmail, { maxAge: 60 * 60 * 24 * 7 });
-        setCookie("id", id, { maxAge: 60 * 60 * 24 * 7 });
-      } else {
-        setCookie("token", jwt);
-        setCookie("role_id", role_id);
-        setCookie("name", name);
-        setCookie("email", sEmail);
-        setCookie("id", id);
-      }
+        toast.success("Login Successful");
 
-      toast.success("Login Successful");
-
-      router.push("/");
-    } catch (err) {
-      if (
-        err.response.status === 400 &&
-        err.response.data.message == "Invalid email or password"
-      ) {
-        toast.error("Invalid email or password");
-      } else {
-        toast.error("Something went wrong");
+        router.push("/");
+      } catch (err) {
+        if (
+          err.response.status === 400 &&
+          err.response.data.message == "Invalid email or password"
+        ) {
+          toast.error("Invalid email or password");
+        } else {
+          toast.error("Something went wrong");
+        }
       }
     }
   };
@@ -74,7 +75,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Login Now and be the best 🤙</title>
+        <title>Login Now and change life of students 🤙</title>
       </Head>
 
       <Flex
@@ -90,10 +91,12 @@ export default function Login() {
       >
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>
-            <Heading fontSize={"4xl"}>Sign in to your account</Heading>
+            <Heading fontSize={"4xl"} textAlign="center">
+              Sign in to your Teacher <br />
+              Dashboard
+            </Heading>
             <Text fontSize={"lg"} color={"gray.600"}>
-              to enjoy all of our life changing{" "}
-              <Link color={"blue.400"}>courses</Link> 👍
+              and start creating <Link color={"blue.400"}>courses</Link> 👍
             </Text>
           </Stack>
           <Box
@@ -150,7 +153,7 @@ export default function Login() {
                   <Link
                     color={"blue.400"}
                     onClick={() => {
-                      router.push("/signup");
+                      router.push("/teacher-signup");
                     }}
                   >
                     Signup
@@ -162,10 +165,10 @@ export default function Login() {
                   <Link
                     color={"blue.400"}
                     onClick={() => {
-                      router.push("/teacher-login");
+                      router.push("/login");
                     }}
                   >
-                    Login as a teacher
+                    Login as Student
                   </Link>
                 </Text>
               </Stack>
@@ -182,7 +185,7 @@ export async function getServerSideProps({ req, res }) {
     req,
     res,
   });
-  // console.log(cookie);
+  //   console.log(cookie);
   if (cookie == undefined) {
     return {
       props: {},

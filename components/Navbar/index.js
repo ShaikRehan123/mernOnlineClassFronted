@@ -18,20 +18,25 @@ import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import Image from "next/image";
-const NavLink = ({ children }) => (
-  <Link
-    px={2}
-    py={1}
-    rounded={"md"}
-    _hover={{
-      textDecoration: "none",
-      bg: useColorModeValue("gray.200", "gray.700"),
-    }}
-    href={"#"}
-  >
-    {children}
-  </Link>
-);
+const NavLink = ({ children, onClick, isActive }) => {
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  return (
+    <Link
+      px={2}
+      py={1}
+      rounded={"md"}
+      _hover={{
+        textDecoration: "none",
+        bg: useColorModeValue("gray.200", "gray.700"),
+      }}
+      onClick={onClick}
+      bg={isActive() ? (colorMode === "light" ? "gray.200" : "gray.700") : ""}
+    >
+      {children}
+    </Link>
+  );
+};
 
 export default function Navbar() {
   const router = useRouter();
@@ -55,6 +60,38 @@ export default function Navbar() {
               }}
             />
           </Box>
+
+          <Flex alignItems={"center"}>
+            <Stack direction={"row"} spacing={7}>
+              <NavLink
+                onClick={() => {
+                  if (router.pathname === "/") return;
+                  router.push("/");
+                }}
+                isActive={() => router.pathname === "/"}
+              >
+                Home
+              </NavLink>
+              <NavLink
+                onClick={() => {
+                  if (router.pathname === "/courses") return;
+                  router.push("/courses");
+                }}
+                isActive={() => router.pathname === "/courses"}
+              >
+                Courses
+              </NavLink>
+              <NavLink
+                onClick={() => {
+                  if (router.pathname === "/about") return;
+                  router.push("/about");
+                }}
+                isActive={() => router.pathname === "/about"}
+              >
+                About
+              </NavLink>
+            </Stack>
+          </Flex>
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>

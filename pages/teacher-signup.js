@@ -22,7 +22,7 @@ import Head from "next/head";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-export default function SignupCard() {
+export default function TeacherSignup() {
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -52,7 +52,7 @@ export default function SignupCard() {
     } else {
       try {
         await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/users/create`,
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/admin/create`,
           {
             name: fullName,
             email: email,
@@ -61,10 +61,12 @@ export default function SignupCard() {
         );
 
         toast.success("Account created successfully");
-        router.push("/login");
+        router.push("/teacher-login");
       } catch (err) {
         //  if status code is 409 (conflict) then show error
-        if (err.response.status === 409) {
+        if (err.response.data.message != undefined) {
+          toast.error(err.response.data.message);
+        } else if (err.response.status === 409) {
           toast.error("Email already exists");
         } else {
           toast.error("Something went wrong");
@@ -76,7 +78,7 @@ export default function SignupCard() {
   return (
     <>
       <Head>
-        <title>Register Now and be the best 🤙</title>
+        <title>Register Now and create courses 🤙</title>
       </Head>
 
       <Flex
@@ -96,7 +98,7 @@ export default function SignupCard() {
               Sign up
             </Heading>
             <Text fontSize={"lg"} color={"gray.600"}>
-              to enjoy all of our cool features ✌️
+              to create courses and start earning
             </Text>
           </Stack>
           <Box
@@ -187,7 +189,7 @@ export default function SignupCard() {
                   <Link
                     color={"blue.400"}
                     onClick={() => {
-                      router.push("/login");
+                      router.push("/teacher-login");
                     }}
                   >
                     Login
@@ -199,10 +201,10 @@ export default function SignupCard() {
                   <Link
                     color={"blue.400"}
                     onClick={() => {
-                      router.push("/teacher-signup");
+                      router.push("/signup");
                     }}
                   >
-                    Signup as a teacher
+                    Signup as a student
                   </Link>
                 </Text>
               </Stack>
