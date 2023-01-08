@@ -18,21 +18,25 @@ import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import Image from "next/image";
-const NavLink = ({ children, onClick, isActive }) => (
-  <Link
-    px={2}
-    py={1}
-    rounded={"md"}
-    _hover={{
-      textDecoration: "none",
-      bg: useColorModeValue("gray.200", "gray.700"),
-    }}
-    onClick={onClick}
-    bg={isActive() ? useColorModeValue("gray.200", "gray.700") : undefined}
-  >
-    {children}
-  </Link>
-);
+const NavLink = ({ children, onClick, isActive }) => {
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  return (
+    <Link
+      px={2}
+      py={1}
+      rounded={"md"}
+      _hover={{
+        textDecoration: "none",
+        bg: useColorModeValue("gray.200", "gray.700"),
+      }}
+      onClick={onClick}
+      bg={isActive() ? (colorMode === "light" ? "gray.200" : "gray.700") : ""}
+    >
+      {children}
+    </Link>
+  );
+};
 
 export default function Navbar() {
   const router = useRouter();
