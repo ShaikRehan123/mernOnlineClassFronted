@@ -32,6 +32,7 @@ const NavLink = ({ children, onClick, isActive }) => {
       }}
       onClick={onClick}
       bg={isActive() ? (colorMode === "light" ? "gray.200" : "gray.700") : ""}
+      transition={"all 0.3s ease"}
     >
       {children}
     </Link>
@@ -83,12 +84,12 @@ export default function Navbar() {
               </NavLink>
               <NavLink
                 onClick={() => {
-                  if (router.pathname === "/about") return;
-                  router.push("/about");
+                  if (router.pathname === "/cart") return;
+                  router.push("/cart");
                 }}
-                isActive={() => router.pathname === "/about"}
+                isActive={() => router.pathname === "/cart"}
               >
-                About
+                Cart
               </NavLink>
             </Stack>
           </Flex>
