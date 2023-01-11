@@ -366,7 +366,7 @@ export default function Home({ categories, courses }) {
               All Courses
             </Heading>
             <SimpleGrid columns={[1, 1, 1, 2]} spacingX="4" spacingY={4}>
-              {courses.map((course) => (
+              {courses?.map((course) => (
                 <CourseCard
                   key={course._id}
                   course_id={course._id}

@@ -47,13 +47,13 @@ export default function TeacherLogin() {
           setCookie("role_id", role_id, { maxAge: 60 * 60 * 24 * 7 });
           setCookie("name", name, { maxAge: 60 * 60 * 24 * 7 });
           setCookie("email", sEmail, { maxAge: 60 * 60 * 24 * 7 });
-          setCookie("id", id, { maxAge: 60 * 60 * 24 * 7 });
+          setCookie("user_id", id, { maxAge: 60 * 60 * 24 * 7 });
         } else {
           setCookie("token", jwt);
           setCookie("role_id", role_id);
           setCookie("name", name);
           setCookie("email", sEmail);
-          setCookie("id", id);
+          setCookie("user_id", id);
         }
 
         toast.success("Login Successful");

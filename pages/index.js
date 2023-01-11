@@ -3,8 +3,11 @@ import { getCookie } from "cookies-next";
 import AdminHomePage from "../components/Admin/AdminHomePage";
 import axios from "axios";
 import CourseCard from "../components/Common/CourseCard/index";
+import { Heading, SimpleGrid, useColorMode } from "@chakra-ui/react";
 
 export default function Home({ role_id, toptenCourses = [] }) {
+  const { colorMode } = useColorMode();
+
   if (role_id == "1") {
     return (
       <>
@@ -17,13 +20,31 @@ export default function Home({ role_id, toptenCourses = [] }) {
       </>
     );
   } else {
-    console.log(toptenCourses);
     return (
       <div>
         <Head>
           <title>Online Class Room</title>
         </Head>
-        <h1>User Page</h1>
+        <Heading as="h2" size="lg" textAlign="center" marginTop={4}>
+          Most Purchased Courses
+        </Heading>
+        <SimpleGrid columns={[1, 1, 1, 2]} spacingX="4" spacingY={4}>
+          {toptenCourses?.map((course) => {
+            console.log(course);
+            return (
+              <CourseCard
+                key={course._id}
+                course_id={course._id}
+                {...course}
+                colorMode={colorMode}
+                isAdmin={false}
+                showAddLessonButton={false}
+                showDeleteButton={false}
+                showAddToCartButton={true}
+              />
+            );
+          })}
+        </SimpleGrid>
       </div>
     );
   }
@@ -47,13 +68,19 @@ export const getServerSideProps = async ({ req, res }) => {
   }
   if (cookie != undefined && role_id == "2") {
     try {
+      const user_id = getCookie("user_id", {
+        req,
+        res,
+      });
+      const requestUserId = user_id ? user_id : "notLoggedIn";
       const toptenCourses = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/top-ten-courses`
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/top-ten-courses?user_id=${requestUserId}`,
+
       );
       return {
         props: {
           role_id,
-          toptenCourses: toptenCourses.data,
+          toptenCourses: toptenCourses.data.topTenCourses,
         },
       };
     } catch (err) {
