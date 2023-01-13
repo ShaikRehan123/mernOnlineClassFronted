@@ -131,8 +131,12 @@ export default function Navbar() {
                   </Center>
                   <br />
                   <MenuDivider />
-                  <MenuItem>My Courses</MenuItem>
-                  <MenuItem>My Cart</MenuItem>
+                  <MenuItem onClick={() => {
+                    router.push('/my-courses')
+                  }}>My Courses</MenuItem>
+                  <MenuItem onClick={() => {
+                    router.push('/cart')
+                  }}>My Cart</MenuItem>
                   <MenuItem
                     onClick={() => {
                       deleteCookie("token");
