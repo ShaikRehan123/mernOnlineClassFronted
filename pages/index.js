@@ -32,16 +32,17 @@ export default function Home({ role_id, toptenCourses = [] }) {
           {toptenCourses?.map((course) => {
             console.log(course);
             return (
-              <CourseCard
-                key={course._id}
-                course_id={course._id}
-                {...course}
-                colorMode={colorMode}
-                isAdmin={false}
-                showAddLessonButton={false}
-                showDeleteButton={false}
-                showAddToCartButton={true}
-              />
+              <div key={course._id}>
+                <CourseCard
+                  course_id={course._id}
+                  {...course}
+                  colorMode={colorMode}
+                  isAdmin={false}
+                  showAddLessonButton={false}
+                  showDeleteButton={false}
+                  showAddToCartButton={course.isEnrolled == false && course.isAddedToCart == false}
+                />
+              </div>
             );
           })}
         </SimpleGrid>
@@ -74,8 +75,7 @@ export const getServerSideProps = async ({ req, res }) => {
       });
       const requestUserId = user_id ? user_id : "notLoggedIn";
       const toptenCourses = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/top-ten-courses?user_id=${requestUserId}`,
-
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/top-ten-courses?user_id=${requestUserId}`
       );
       return {
         props: {
