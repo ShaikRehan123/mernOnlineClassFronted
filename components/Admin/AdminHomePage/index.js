@@ -167,6 +167,7 @@ const NavItem = ({ icon, children, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const router = useRouter();
   return (
     <Flex
       ml={{ base: 0, md: 60 }}

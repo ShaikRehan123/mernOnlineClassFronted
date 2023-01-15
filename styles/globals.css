@@ -7,3 +7,12 @@
   margin: 0;
   padding: 0;
 }
+
+#custom_style_checkbox ~ span {
+  padding: 10px !important;
+}
+
+.chakra-image{
+    width: 400px;
+    height: 400px;
+}

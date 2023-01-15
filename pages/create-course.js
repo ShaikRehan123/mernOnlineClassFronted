@@ -375,6 +375,7 @@ export default function Home({ categories, courses }) {
                   isAdmin={true}
                   showAddLessonButton={true}
                   showDeleteButton={true}
+                  toggleActive={true}
                 />
               ))}
             </SimpleGrid>

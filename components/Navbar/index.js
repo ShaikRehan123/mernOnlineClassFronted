@@ -73,15 +73,15 @@ export default function Navbar() {
               >
                 Home
               </NavLink>
-              <NavLink
-                onClick={() => {
-                  if (router.pathname === "/courses") return;
-                  router.push("/courses");
-                }}
-                isActive={() => router.pathname === "/courses"}
-              >
-                Courses
-              </NavLink>
+              {/*<NavLink*/}
+              {/*  onClick={() => {*/}
+              {/*    if (router.pathname === "/courses") return;*/}
+              {/*    router.push("/courses");*/}
+              {/*  }}*/}
+              {/*  isActive={() => router.pathname === "/courses"}*/}
+              {/*>*/}
+              {/*  Courses*/}
+              {/*</NavLink>*/}
               <NavLink
                 onClick={() => {
                   if (router.pathname === "/cart") return;

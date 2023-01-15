@@ -9,12 +9,16 @@ import {
     Tooltip,
     HStack,
     Button,
+    Checkbox, Progress,
 } from "@chakra-ui/react";
 import axios from "axios";
 import {useRouter} from "next/router";
 import {toast} from "react-hot-toast";
 import {BsStar, BsStarFill, BsStarHalf} from "react-icons/bs";
-import {MdOutlineAddShoppingCart, MdOutlineRemoveShoppingCart} from "react-icons/md";
+import {
+    MdOutlineAddShoppingCart,
+    MdOutlineRemoveShoppingCart, MdOutlineVisibility, MdOutlineVisibilityOff,
+} from "react-icons/md";
 import {getCookie} from "cookies-next";
 
 // const data = {
@@ -90,6 +94,15 @@ function CourseCard({
                         isAddedToCart = false,
                         showAddToCartButton = false,
                         showRemoveFromCartButton = false,
+                        selectedCoursesForCheckOut = null,
+                        setSelectedCoursesForCheckOut = null,
+                        selectCoursesForCheckout = false,
+                        showPrice = true,
+                        viewCourse = false,
+                        showProgress = false,
+                        progress = 0,
+                        toggleActive = false,
+                        is_active = false,
                     }) {
     const router = useRouter();
 
@@ -152,10 +165,34 @@ function CourseCard({
                 }
             );
             if (res.data.status == "success") {
-                toast.success(res.data.message || "Course removed from cart successfully");
+                toast.success(
+                    res.data.message || "Course removed from cart successfully"
+                );
                 refreshData();
             } else {
                 toast.error(res.data.message || "Something went wrong");
+            }
+        } catch (err) {
+            toast.error(err.message || "Something went wrong");
+        }
+    };
+
+    const toggleActiveCourse = async (course_id) => {
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/course/toggle-active`,
+                {
+                    course_id,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${getCookie("token")}`,
+                    }
+                }
+            );
+            if (res.data.status == "success") {
+                toast.success(res.data.message || "Course toggled successfully");
+                refreshData();
             }
         } catch (err) {
             toast.error(err.message || "Something went wrong");
@@ -215,7 +252,7 @@ function CourseCard({
                         >
                             {name}
                         </Box>
-                        {(!isAdmin && !isAddedToCart && showAddToCartButton) && (
+                        {!isAdmin && !isAddedToCart && showAddToCartButton && (
                             <Tooltip
                                 label="Add to cart"
                                 bg="white"
@@ -223,7 +260,15 @@ function CourseCard({
                                 color={"gray.800"}
                                 fontSize={"1.2em"}
                             >
-                                <chakra.a display={"flex"}>
+                                <chakra.a
+                                    display={"flex"}
+                                    background={"gray.500"}
+                                    borderRadius={10}
+                                    padding={2}
+                                    _hover={{
+                                        background: "gray.600",
+                                    }}
+                                >
                                     <Icon
                                         as={MdOutlineAddShoppingCart}
                                         h={7}
@@ -236,7 +281,7 @@ function CourseCard({
                                 </chakra.a>
                             </Tooltip>
                         )}
-                        {(!isAdmin && showRemoveFromCartButton) && (
+                        {!isAdmin && showRemoveFromCartButton && (
                             <Tooltip
                                 label="Remove from cart"
                                 bg={"white"}
@@ -244,7 +289,15 @@ function CourseCard({
                                 color={"gray.800"}
                                 fontSize={"1.2em"}
                             >
-                                <chakra.a display={"flex"}>
+                                <chakra.a
+                                    display={"flex"}
+                                    background={"gray.500"}
+                                    borderRadius={10}
+                                    padding={2}
+                                    _hover={{
+                                        background: "gray.600",
+                                    }}
+                                >
                                     <Icon
                                         as={MdOutlineRemoveShoppingCart}
                                         h={7}
@@ -257,7 +310,56 @@ function CourseCard({
                                 </chakra.a>
                             </Tooltip>
                         )}
+
+                        {(isAdmin && toggleActive) && (
+                            <Tooltip
+                                label="Toggle active"
+                                bg={"white"}
+                                placement={"top"}
+                                color={"gray.800"}
+                                fontSize={"1.2em"}
+                            >
+                                <chakra.a
+                                    display={"flex"}
+                                    background={"gray.500"}
+                                    borderRadius={10}
+                                    padding={2}
+                                    _hover={{
+                                        background: "gray.600",
+                                    }}
+                                >
+                                    <Icon
+                                        as={is_active ? MdOutlineVisibilityOff : MdOutlineVisibility}
+                                        h={7}
+                                        w={7}
+                                        alignSelf={"center"}
+                                        color={colorMode === "light" ? "gray.800" : "white"}
+                                        onClick={() => toggleActiveCourse(course_id)}
+                                        cursor={"pointer"}
+                                    />
+                                </chakra.a>
+                            </Tooltip>
+
+                        )}
                     </Flex>
+
+                    {!isAdmin && selectCoursesForCheckout && (
+                        <Checkbox
+                            colorScheme="red"
+                            onChange={(e) => {
+                                if (e.target.checked) {
+                                    setSelectedCoursesForCheckOut((prev) => [...prev, course_id]);
+                                } else if (!e.target.checked) {
+                                    setSelectedCoursesForCheckOut((prev) =>
+                                        prev.filter((id) => id !== course_id)
+                                    );
+                                }
+                            }}
+                            id="custom_style_checkbox"
+                        >
+                            Purchase this course
+                        </Checkbox>
+                    )}
 
                     <Flex justifyContent="space-between" alignContent="center">
                         {/* <Rating rating={data.rating} numReviews={data.numReviews} /> */}
@@ -271,17 +373,8 @@ function CourseCard({
                         >
                             {category_name}
                         </Box>
-                        {/*
-            <Box
-              fontSize="sm"
-              fontWeight="semibold"
-              as="h4"
-              lineHeight="tight"
-              color={useColorModeValue("gray.900", "white")}
-            >
-              {author_name}
-            </Box> */}
-                        {price !== 0 ? (
+
+                        {price !== 0 && showPrice && (
                             <Box
                                 fontSize="2xl"
                                 color={colorMode === "light" ? "gray.800" : "white"}
@@ -291,14 +384,14 @@ function CourseCard({
                                 </Box>
                                 {price.toFixed(2)}
                             </Box>
-                        ) : (
-                            <Box
-                                fontSize="2xl"
-                                color={colorMode === "light" ? "gray.800" : "white"}
-                            >
-                                Free
-                            </Box>
                         )}
+                        {price == 0 && showPrice && (<Box
+                            fontSize="2xl"
+                            color={colorMode === "light" ? "gray.800" : "white"}
+                        >
+                            Free
+                        </Box>)}
+
                     </Flex>
 
                     {showAddLessonButton && (
@@ -323,7 +416,29 @@ function CourseCard({
                         </Box>
                     )}
 
-                    {showDeleteButton && (
+                    {/*{showDeleteButton && (*/}
+                    {/*    <Box*/}
+                    {/*        mt="1"*/}
+                    {/*        fontWeight="semibold"*/}
+                    {/*        as="h4"*/}
+                    {/*        lineHeight="tight"*/}
+                    {/*        color={colorMode === "light" ? "gray.800" : "white"}*/}
+                    {/*        onClick={() => {*/}
+                    {/*            const isConfirmed = confirm(*/}
+                    {/*                "Are you sure you want to delete this course?"*/}
+                    {/*            );*/}
+                    {/*            if (isConfirmed) {*/}
+                    {/*                deleteCourse();*/}
+                    {/*            }*/}
+                    {/*        }}*/}
+                    {/*    >*/}
+                    {/*        <Button colorScheme="red" variant="outline" size="sm">*/}
+                    {/*            Delete Course*/}
+                    {/*        </Button>*/}
+                    {/*    </Box>*/}
+                    {/*)}*/}
+
+                    {viewCourse && (
                         <Box
                             mt="1"
                             fontWeight="semibold"
@@ -331,20 +446,27 @@ function CourseCard({
                             lineHeight="tight"
                             color={colorMode === "light" ? "gray.800" : "white"}
                             onClick={() => {
-                                const isConfirmed = confirm(
-                                    "Are you sure you want to delete this course?"
-                                );
-                                if (isConfirmed) {
-                                    deleteCourse();
-                                }
+                                console.log("view course");
+                                console.log(course_id);
+                                const url = "/course/" + course_id;
+                                router.push(url);
                             }}
                         >
-                            <Button colorScheme="red" variant="outline" size="sm">
-                                Delete Course
+                            <Button
+                                colorScheme="teal"
+                                variant="outline"
+                                size="sm"
+                                // onClick={onOpen}
+                            >
+                                View Course
                             </Button>
                         </Box>
                     )}
                 </Box>
+
+                {showProgress && (
+                    <Progress colorScheme={colorMode === "light" ? "blue" : "teal"} value={progress} />
+                )}
             </Box>
         </Flex>
     );
