@@ -70,8 +70,8 @@ export default function Home({ lessons, course_id }) {
                   toast.error("Please fill all the fields");
                 } else if (video.file === "") {
                   toast.error("Please select a video");
-                } else if (video.file.size > 200000000) {
-                  toast.error("Video size should be less than 200MB");
+                } else if (video.file.size > 400000000) {
+                  toast.error("Video size should be less than 400MB");
                 } else {
                   // console.log(video.file.size / 1000000 + "MB");
 
